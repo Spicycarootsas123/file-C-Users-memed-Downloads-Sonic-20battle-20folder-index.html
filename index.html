@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sonic Spin Clash Sim</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="shell">
+    <section class="setup panel" id="setupPanel">
+      <p class="eyebrow">Quick Start</p>
+      <h1>Sonic Spin Clash Sim</h1>
+      <p class="lede">
+        Pick up to four fighters, tune the chaos, and let the simulation run. Shields come from falling monitors,
+        Eggman removes one life, and the last fighter standing wins the round.
+      </p>
+
+      <div class="setup-grid fighter-select-grid">
+        <label class="picker">
+          <span>Fighter 1</span>
+          <select id="fighterOneSelect">
+            <option value="Sonic">Sonic</option>
+            <option value="Tails">Tails</option>
+          </select>
+        </label>
+        <label class="picker">
+          <span>Fighter 2</span>
+          <select id="fighterTwoSelect">
+            <option value="Tails">Tails</option>
+            <option value="Sonic">Sonic</option>
+          </select>
+        </label>
+        <label class="picker">
+          <span>Fighter 3</span>
+          <select id="fighterThreeSelect">
+            <option value="">None</option>
+            <option value="Sonic">Sonic</option>
+            <option value="Tails">Tails</option>
+          </select>
+        </label>
+        <label class="picker">
+          <span>Fighter 4</span>
+          <select id="fighterFourSelect">
+            <option value="">None</option>
+            <option value="Sonic">Sonic</option>
+            <option value="Tails">Tails</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="setup-grid options-grid">
+        <label class="picker">
+          <span>Best Of</span>
+          <select id="bestOfSelect">
+            <option value="1">Single Match</option>
+            <option value="3" selected>Best of 3</option>
+            <option value="5">Best of 5</option>
+            <option value="7">Best of 7</option>
+          </select>
+        </label>
+        <label class="picker">
+          <span>Tournament Mode</span>
+          <select id="tournamentSelect">
+            <option value="off" selected>Off</option>
+            <option value="on">Auto Tournament</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="slider-grid">
+        <label class="picker slider-picker">
+          <span>Simulation Speed</span>
+          <input id="speedSlider" type="range" min="0.25" max="3" step="0.25" value="1">
+          <strong id="speedValue">1x</strong>
+        </label>
+        <label class="picker slider-picker">
+          <span>Monitor Spawn Rate</span>
+          <input id="monitorRateSlider" type="range" min="0.5" max="2" step="0.25" value="1">
+          <strong id="monitorRateValue">1x</strong>
+        </label>
+        <label class="picker slider-picker">
+          <span>Power Duration</span>
+          <input id="powerDurationSlider" type="range" min="0.5" max="2" step="0.25" value="1">
+          <strong id="powerDurationValue">1x</strong>
+        </label>
+        <label class="picker slider-picker">
+          <span>Sonic Size</span>
+          <input id="sonicSizeSlider" type="range" min="0.9" max="1.6" step="0.05" value="1.28">
+          <strong id="sonicSizeValue">1.28x</strong>
+        </label>
+        <label class="picker slider-picker">
+          <span>Tails Size</span>
+          <input id="tailsSizeSlider" type="range" min="0.8" max="1.4" step="0.05" value="1.18">
+          <strong id="tailsSizeValue">1.18x</strong>
+        </label>
+      </div>
+
+      <div class="setup-grid rules-grid">
+        <label class="picker">
+          <span>Chaos Preset</span>
+          <select id="chaosPresetSelect">
+            <option value="classic" selected>Classic</option>
+            <option value="shieldrush">Shield Rush</option>
+            <option value="wild">Wild</option>
+            <option value="speedfrenzy">Speed Frenzy</option>
+            <option value="custom">Custom</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="monitor-rule-grid">
+        <label class="rule-chip">
+          <input type="checkbox" data-monitor-rule="fire" checked>
+          <span>Fire</span>
+        </label>
+        <label class="rule-chip">
+          <input type="checkbox" data-monitor-rule="electric" checked>
+          <span>Electric</span>
+        </label>
+        <label class="rule-chip">
+          <input type="checkbox" data-monitor-rule="bubble" checked>
+          <span>Bubble</span>
+        </label>
+        <label class="rule-chip">
+          <input type="checkbox" data-monitor-rule="speed" checked>
+          <span>Speed</span>
+        </label>
+        <label class="rule-chip">
+          <input type="checkbox" data-monitor-rule="eggman" checked>
+          <span>Eggman</span>
+        </label>
+      </div>
+
+      <div class="controls">
+        <button id="startButton" type="button">Start Simulation</button>
+      </div>
+    </section>
+
+    <section class="match hidden" id="matchPanel">
+      <div class="arena-shell" id="arenaShell">
+        <div class="arena-top-ui">
+          <div class="controls arena-controls">
+            <button id="resetButton" type="button">Restart</button>
+            <button id="toggleButton" type="button">Pause</button>
+            <button id="spawnButton" type="button">Monitor</button>
+            <button id="fullscreenButton" type="button">Full</button>
+            <button id="backButton" type="button">Exit</button>
+          </div>
+
+          <div class="fighter-grid arena-fighter-grid" id="fighterHudGrid"></div>
+
+          <div class="visually-hidden" aria-hidden="true">
+            <div id="roundStatus">Best of 3</div>
+            <div id="tournamentStatus">Tournament Off</div>
+            <div id="monitorStatus">Classic Chaos</div>
+          </div>
+        </div>
+
+        <canvas id="game" width="540" height="960" aria-label="Sonic Spin Clash simulation">
+          Your browser does not support the canvas element.
+        </canvas>
+      </div>
+
+      <div class="bottom-panels">
+        <div class="panel">
+          <h2>Sprite Loader</h2>
+          <p>
+            Swap in Sonic 3-style PNG sprite sheets at any time. Use horizontal sheets for ball, hurt, death, and victory.
+          </p>
+          <div class="sprite-loader">
+            <div class="sprite-group">
+              <p class="sprite-group-title">Sonic</p>
+              <label class="sprite-input">
+                <span>Ball</span>
+                <input type="file" id="upload-sonic-ball" accept="image/png">
+              </label>
+              <label class="sprite-input">
+                <span>Hurt</span>
+                <input type="file" id="upload-sonic-hurt" accept="image/png">
+              </label>
+              <label class="sprite-input">
+                <span>Death</span>
+                <input type="file" id="upload-sonic-death" accept="image/png">
+              </label>
+              <label class="sprite-input">
+                <span>Victory</span>
+                <input type="file" id="upload-sonic-victory" accept="image/png">
+              </label>
+            </div>
+            <div class="sprite-group">
+              <p class="sprite-group-title">Tails</p>
+              <label class="sprite-input">
+                <span>Ball</span>
+                <input type="file" id="upload-tails-ball" accept="image/png">
+              </label>
+              <label class="sprite-input">
+                <span>Hurt</span>
+                <input type="file" id="upload-tails-hurt" accept="image/png">
+              </label>
+              <label class="sprite-input">
+                <span>Death</span>
+                <input type="file" id="upload-tails-death" accept="image/png">
+              </label>
+              <label class="sprite-input">
+                <span>Victory</span>
+                <input type="file" id="upload-tails-victory" accept="image/png">
+              </label>
+            </div>
+          </div>
+          <button id="restoreSpritesButton" type="button">Restore Default Sprites</button>
+        </div>
+
+        <div class="panel" id="eventLog" aria-live="polite">
+          <h2>Session Stats</h2>
+          <div class="stats-grid" id="statsGrid"></div>
+
+          <h2>Round History</h2>
+          <ul id="matchHistory"></ul>
+
+          <h2>Replay Log</h2>
+          <ul id="events"></ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="./game.js"></script>
+</body>
+</html>
